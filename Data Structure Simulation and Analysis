@@ -1,12 +1,12 @@
 """
-Part 1: 
+Part 1:
 Finish creating the linked list class below) with the following methods:
   a. insert(index, item): Inserts an item at the specified index.
   b. remove(index): Removes and returns the item at the specified index.
   c. get(index): Returns the item at the specified index without removing it.
   d. Create a linked list and test all the methods you just added.
 ------------------------------------------------------------------------------------------------------------------------
-Part 2: Simulations - Write 3 functions for each scenario described below. 
+Part 2: Simulations - Write 3 functions for each scenario described below.
 For each function, execute a set number of operations and measure the time it takes to complete each task using each data structure.
 In your print statements, explain what is being printed, using what data structure.
 
@@ -89,12 +89,22 @@ class LinkedListNode:
     def __init__(self, data=None):
         self.data = data
         self.next = None
+    def __repr__(self):
+        return str(self.data)
 
 
 class LinkedList:
     def __init__(self):
         self.head = None
         self.size = 0
+
+    def __repr__(self):
+      nodes = []
+      current = self.head
+      while current:
+        nodes.append(str(current))
+        current = current.next
+      return str(nodes)
 
     def append(self, item):
         new_node = LinkedListNode(item)
@@ -110,12 +120,88 @@ class LinkedList:
     #If you try to insert, remove, or get the index past the amount of values in your linked list, raise an exception "Position out of bounds"
     def insert(self, index, item):
         # Implement insertion at a specific index
-        pass
+        if index > self.size or index < 0:
+            raise IndexError("Position out of bounds")
+        else:
+            new_node = LinkedListNode(item)
+            if index == 0:
+                new_node.next = self.head
+                self.head = new_node
+            else:
+                current = self.head
+                for i in range(index-1):
+                    current = current.next
+                new_node.next = current.next
+                current.next = new_node
+            self.size += 1
 
     def remove(self, index):
         # Implement removal at a specific index
-        pass
+        if index > self.size or index < 0:
+            raise IndexError("Position out of bounds")
+        elif index == 0:
+            self.head = self.head.next
+        else:
+          current = self.head
+          for i in range(index-1):
+              current = current.next
+          current.next = current.next.next
+        self.size -= 1
 
     def get(self, index):
         # Implement retrieval at a specific index
-        pass
+        if index > self.size or index < 0:
+          return None
+        else:
+          current = self.head
+          for i in range(index):
+              current = current.next
+          return current.next
+
+def linked_list():
+  bloc = LinkedList()
+  bloc.append("A")
+  bloc.append("B")
+  bloc.append("C")
+  print(bloc)
+  bloc.insert(3, "D")
+  print(bloc)
+  bloc.remove(0)
+  print(bloc)
+  print(bloc.get(3))
+
+def lifo_simulation(n):
+  startTime = time.time()
+  stack = Stack()
+  for i in range(n):
+    stack.push(i)
+  for i in range(n):
+    stack.pop()
+  endTime = time.time()
+  print(f"Stack LIFO simulation with {n:,} elements, it took {endTime-startTime:4f} seconds")
+
+def fifo_simulation(n):
+  startTime = time.time()
+  queue = Queue()
+  for i in range(n):
+    queue.enqueue(i)
+  for i in range(n):
+    queue.dequeue()
+  endTime = time.time()
+  print(f"Queue FIFO simulation with {n:,} elements, it took {endTime-startTime:4f} seconds")
+  # FIFO is slower because dequeue is O(n) while LIFO is faster because both pop and append are O(1)
+
+def linked_simulation(n):
+  startTime = time.time()
+  ll = LinkedList()
+  for i in range(n):
+    ll.append(i)
+  for i in range(n):
+    ll.remove(0)
+  endTime = time.time()
+  print(f"Linked List simulation with {n:,} elements, it took {endTime-startTime:4f} seconds")
+  # LL is slower because it is O(n^2) because remove is n and append is n
+
+lifo_simulation(1000000)
+fifo_simulation(100000)
+linked_simulation(10000)
